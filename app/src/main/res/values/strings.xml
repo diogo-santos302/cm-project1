@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">MyDayLogger</string>
+    <string name="steps">Steps</string>
+    <string name="stepsProgress">%d / %d</string>
+    <string name="heart_rate">Heart Rate</string>
+    <string name="sleep_log">Sleep Log</string>
 </resources>
