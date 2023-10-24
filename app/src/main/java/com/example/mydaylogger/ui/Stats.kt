@@ -24,6 +24,9 @@ import co.yml.charts.axis.AxisConfig
 import co.yml.charts.axis.AxisData
 import co.yml.charts.common.model.PlotType
 import co.yml.charts.common.model.Point
+import co.yml.charts.common.utils.DataUtils
+import co.yml.charts.ui.barchart.BarChart
+import co.yml.charts.ui.barchart.models.BarChartData
 import co.yml.charts.ui.linechart.LineChart
 import co.yml.charts.ui.linechart.model.IntersectionPoint
 import co.yml.charts.ui.linechart.model.Line
@@ -37,6 +40,7 @@ import com.example.mydaylogger.ui.theme.MyDayLoggerTheme
 const val STEPS_PROGRESS_BAR_TEST_TAG = "stepsProgressBar"
 const val HEART_RATE_TEST_TAG = "heartRate"
 const val HEART_RATE_GRAPH_TEST_TAG = "heartRateGraph"
+const val SLEEP_LOG_GRAPH_TEST_TAG = "sleepLogGraph"
 
 @Composable
 fun Stats(modifier: Modifier = Modifier) {
@@ -111,6 +115,43 @@ fun HeartRateCard(values: List<Int>, modifier: Modifier = Modifier) {
     }
 }
 
+@Composable
+fun SleepLogCard(values: List<Time>, modifier: Modifier = Modifier) {
+    val maxRange = values.max()
+    val data = DataUtils.getBarChartData(values.size, maxRange)
+    val xAxisData = AxisData.Builder()
+        .axisStepSize(30.dp)
+        .steps(data.size - 1)
+        .bottomPadding(40.dp)
+        .axisLabelAngle(20f)
+        .labelData { index -> data[index].label }
+        .build()
+    val yAxisData = AxisData.Builder()
+        .steps(5)
+        .labelAndAxisLinePadding(20.dp)
+        .axisOffset(20.dp)
+        .labelData { index -> (index * (maxRange / 5)).toString() }
+        .build()
+    val barChartData = BarChartData(
+        chartData = data,
+        xAxisData = xAxisData,
+        yAxisData = yAxisData
+    )
+    Card(modifier = modifier) {
+        Row(modifier = Modifier.padding(8.dp)) {
+            Text(
+                text = stringResource(R.string.sleep_log),
+                style = MaterialTheme.typography.titleMedium
+            )
+            Spacer(modifier = Modifier.padding(8.dp))
+            BarChart(
+                modifier = Modifier.testTag(SLEEP_LOG_GRAPH_TEST_TAG),
+                barChartData = barChartData
+            )
+        }
+    }
+}
+
 private fun getLinesFromHeartRates(values: List<Int>, color: Color = Color.Red): List<Line> {
     val points = values.mapIndexed { index, value -> Point(index.toFloat(), value.toFloat()) }
     val lines = mutableListOf<Line>()
@@ -157,7 +198,14 @@ fun PreviewStepsCard() {
 @Composable
 fun PreviewHeartRateCard() {
     MyDayLoggerTheme {
-//        HeartRateCard(values = listOf(74, 60, 82, 90, 105, 69, 30))
-        HeartRateCard(values = listOf())
+        HeartRateCard(values = listOf(74, 60, 82, 90, 105, 69, 30))
+    }
+}
+
+@Preview
+@Composable
+fun PreviewSleepLog() {
+    MyDayLoggerTheme {
+        SleepLogCard()
     }
 }
