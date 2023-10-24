@@ -1,12 +1,15 @@
 package com.example.mydaylogger
 
 import androidx.activity.ComponentActivity
-import androidx.compose.ui.res.stringResource
+import androidx.annotation.StringRes
+import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import com.example.mydaylogger.ui.HEART_RATE_GRAPH_TEST_TAG
+import com.example.mydaylogger.ui.HEART_RATE_TEST_TAG
+import com.example.mydaylogger.ui.HeartRateCard
 import com.example.mydaylogger.ui.STEPS_PROGRESS_BAR_TEST_TAG
 import com.example.mydaylogger.ui.Stats
 import com.example.mydaylogger.ui.StepsCard
@@ -43,9 +46,8 @@ class StatsTest {
                     StepsCard()
                 }
             }
-
-            onNodeWithText(composeTestRule.activity.getString(R.string.steps)).assertIsDisplayed()
-            onNodeWithText(composeTestRule.activity.getString(R.string.stepsProgress)).assertIsDisplayed()
+            onNodeWithStringId(R.string.steps).assertIsDisplayed()
+            onNodeWithStringId(R.string.stepsProgress).assertIsDisplayed()
             onNodeWithTag(STEPS_PROGRESS_BAR_TEST_TAG).assertIsDisplayed()
         }
     }
@@ -54,13 +56,12 @@ class StatsTest {
     fun frequencyIsShown() {
         composeTestRule.setContent {
             MyDayLoggerTheme {
-                Stats()
+                HeartRateCard(values = listOf(74, 60, 82, 90, 105, 69, 30))
             }
         }
-
-        composeTestRule.onNodeWithText("Heart Rate").assertIsDisplayed()
-        composeTestRule.onNodeWithTag("heartRate").assertIsDisplayed()
-        composeTestRule.onNodeWithTag("heartRateGraph").assertIsDisplayed()
+        onNodeWithStringId(R.string.heart_rate).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(HEART_RATE_TEST_TAG).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(HEART_RATE_GRAPH_TEST_TAG).assertIsDisplayed()
     }
 
     @Test
@@ -73,5 +74,9 @@ class StatsTest {
 
         composeTestRule.onNodeWithText("Sleep Log").assertIsDisplayed()
         composeTestRule.onNodeWithTag("sleepGraph").assertIsDisplayed()
+    }
+
+    private fun onNodeWithStringId(@StringRes id: Int): SemanticsNodeInteraction {
+        return composeTestRule.onNodeWithText(composeTestRule.activity.getString(id))
     }
 }
