@@ -9,6 +9,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import com.example.mydaylogger.ui.STEPS_PROGRESS_BAR_TEST_TAG
 import com.example.mydaylogger.ui.Stats
+import com.example.mydaylogger.ui.StepsCard
 import com.example.mydaylogger.ui.theme.MyDayLoggerTheme
 import org.junit.Rule
 import org.junit.Test
@@ -39,7 +40,7 @@ class StatsTest {
         composeTestRule.apply {
             setContent {
                 MyDayLoggerTheme {
-                    Stats()
+                    StepsCard()
                 }
             }
 
