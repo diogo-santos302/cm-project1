@@ -1,31 +1,24 @@
 package com.example.mydaylogger.location
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
-import android.location.Location
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 
-class LocationService(private val context: Context) {
-    private val fusedLocationClient: FusedLocationProviderClient =
-        LocationServices.getFusedLocationProviderClient(context)
+interface LocationService {
+    var context: Context
 
-    @SuppressLint("MissingPermission")
-    fun getCurrentLocationOrNull(callback: (Location?) -> Unit) {
-        if (hasLocationPermissions()) {
-            fusedLocationClient.lastLocation
-                .addOnSuccessListener { location ->
-                    callback(location)
-                }
-        }
+    companion object {
+        const val LOCATION_PERMISSION_REQUEST_CODE = 123
+        val permissions = arrayOf(
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
     }
 
-    private fun hasLocationPermissions(): Boolean {
+    fun hasLocationPermissions(): Boolean {
         return ContextCompat
             .checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) ==
                 PackageManager.PERMISSION_GRANTED && ContextCompat
@@ -39,9 +32,5 @@ class LocationService(private val context: Context) {
             arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
             LOCATION_PERMISSION_REQUEST_CODE
         )
-    }
-
-    companion object {
-        private const val LOCATION_PERMISSION_REQUEST_CODE = 123
     }
 }

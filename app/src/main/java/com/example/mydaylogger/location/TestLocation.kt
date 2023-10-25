@@ -16,8 +16,8 @@ private const val TAG = "TestLocation"
 @Composable
 fun TestLocation(context: Context, modifier: Modifier = Modifier) {
     var currentLocation: Location? by remember { mutableStateOf(null) }
-    LocationService(context).getLocationPermissions()
-    LocationService(context).getCurrentLocationOrNull {
+    CurrentLocationService(context).getLocationPermissions()
+    CurrentLocationService(context).getCurrentLocationOrNull {
         currentLocation = it
     }
     Log.d(TAG, currentLocation?.latitude?.toString() + "," + currentLocation?.longitude?.toString())
