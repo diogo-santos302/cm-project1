@@ -115,43 +115,6 @@ fun HeartRateCard(values: List<Int>, modifier: Modifier = Modifier) {
     }
 }
 
-@Composable
-fun SleepLogCard(values: List<Time>, modifier: Modifier = Modifier) {
-    val maxRange = values.max()
-    val data = DataUtils.getBarChartData(values.size, maxRange)
-    val xAxisData = AxisData.Builder()
-        .axisStepSize(30.dp)
-        .steps(data.size - 1)
-        .bottomPadding(40.dp)
-        .axisLabelAngle(20f)
-        .labelData { index -> data[index].label }
-        .build()
-    val yAxisData = AxisData.Builder()
-        .steps(5)
-        .labelAndAxisLinePadding(20.dp)
-        .axisOffset(20.dp)
-        .labelData { index -> (index * (maxRange / 5)).toString() }
-        .build()
-    val barChartData = BarChartData(
-        chartData = data,
-        xAxisData = xAxisData,
-        yAxisData = yAxisData
-    )
-    Card(modifier = modifier) {
-        Row(modifier = Modifier.padding(8.dp)) {
-            Text(
-                text = stringResource(R.string.sleep_log),
-                style = MaterialTheme.typography.titleMedium
-            )
-            Spacer(modifier = Modifier.padding(8.dp))
-            BarChart(
-                modifier = Modifier.testTag(SLEEP_LOG_GRAPH_TEST_TAG),
-                barChartData = barChartData
-            )
-        }
-    }
-}
-
 private fun getLinesFromHeartRates(values: List<Int>, color: Color = Color.Red): List<Line> {
     val points = values.mapIndexed { index, value -> Point(index.toFloat(), value.toFloat()) }
     val lines = mutableListOf<Line>()
@@ -186,6 +149,43 @@ private fun getLineChartDataFromLinesNoAxis(lines: List<Line>): LineChartData {
     return LineChartData(linePlotData = linePlotData, xAxisData = xAxisData, yAxisData = yAxisData)
 }
 
+//@Composable
+//fun SleepLogCard(values: List<Time>, modifier: Modifier = Modifier) {
+//    val maxRange = values.max()
+//    val data = DataUtils.getBarChartData(values.size, maxRange)
+//    val xAxisData = AxisData.Builder()
+//        .axisStepSize(30.dp)
+//        .steps(data.size - 1)
+//        .bottomPadding(40.dp)
+//        .axisLabelAngle(20f)
+//        .labelData { index -> data[index].label }
+//        .build()
+//    val yAxisData = AxisData.Builder()
+//        .steps(5)
+//        .labelAndAxisLinePadding(20.dp)
+//        .axisOffset(20.dp)
+//        .labelData { index -> (index * (maxRange / 5)).toString() }
+//        .build()
+//    val barChartData = BarChartData(
+//        chartData = data,
+//        xAxisData = xAxisData,
+//        yAxisData = yAxisData
+//    )
+//    Card(modifier = modifier) {
+//        Row(modifier = Modifier.padding(8.dp)) {
+//            Text(
+//                text = stringResource(R.string.sleep_log),
+//                style = MaterialTheme.typography.titleMedium
+//            )
+//            Spacer(modifier = Modifier.padding(8.dp))
+//            BarChart(
+//                modifier = Modifier.testTag(SLEEP_LOG_GRAPH_TEST_TAG),
+//                barChartData = barChartData
+//            )
+//        }
+//    }
+//}
+
 @Preview()
 @Composable
 fun PreviewStepsCard() {
@@ -202,10 +202,10 @@ fun PreviewHeartRateCard() {
     }
 }
 
-@Preview
-@Composable
-fun PreviewSleepLog() {
-    MyDayLoggerTheme {
-        SleepLogCard()
-    }
-}
+//@Preview
+//@Composable
+//fun PreviewSleepLog() {
+//    MyDayLoggerTheme {
+//        SleepLogCard()
+//    }
+//}
