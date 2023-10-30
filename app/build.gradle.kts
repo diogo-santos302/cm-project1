@@ -51,7 +51,7 @@ android {
 
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.9.0")
+    implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation("androidx.activity:activity-compose:1.8.0")
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
@@ -61,6 +61,21 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.navigation:navigation-compose:2.7.4")
     implementation("io.coil-kt:coil-compose:1.3.2")
+
+    //Bottom Navigation
+    implementation("androidx.compose.material:material:1.5.4")
+
+
+    //Room
+    implementation("androidx.room:room-runtime:2.6.0")
+    implementation("com.google.android.gms:play-services-wearable:18.1.0")
+    //implementation(project(mapOf("path" to ":wearosaccelerometerdata")))
+    annotationProcessor("androidx.room:room-compiler:2.6.0")
+
+    // To use Kotlin annotation processing tool (kapt)
+    //kapt("androidx.room:room-compiler:2.6.0")
+    // To use Kotlin Symbol Processing (KSP)
+    //ksp("androidx.room:room-compiler:2.6.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -78,6 +93,6 @@ dependencies {
 
     // Testing
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    androidTestImplementation("androidx.navigation:navigation-testing:2.6.0")
+    androidTestImplementation("androidx.navigation:navigation-testing:2.7.4")
     androidTestImplementation("androidx.test.espresso:espresso-intents:3.5.1")
 }

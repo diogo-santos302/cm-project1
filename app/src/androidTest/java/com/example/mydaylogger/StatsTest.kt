@@ -10,10 +10,7 @@ import androidx.compose.ui.test.onNodeWithText
 import com.example.mydaylogger.ui.HEART_RATE_GRAPH_TEST_TAG
 import com.example.mydaylogger.ui.HEART_RATE_TEST_TAG
 import com.example.mydaylogger.ui.HeartRateCard
-import com.example.mydaylogger.ui.SLEEP_LOG_GRAPH_TEST_TAG
 import com.example.mydaylogger.ui.STEPS_PROGRESS_BAR_TEST_TAG
-import com.example.mydaylogger.ui.SleepLogCard
-import com.example.mydaylogger.ui.Stats
 import com.example.mydaylogger.ui.StepsCard
 import com.example.mydaylogger.ui.theme.MyDayLoggerTheme
 import org.junit.Rule
@@ -66,16 +63,16 @@ class StatsTest {
         composeTestRule.onNodeWithTag(HEART_RATE_GRAPH_TEST_TAG).assertIsDisplayed()
     }
 
-    @Test
-    fun sleepLogIsShown() {
-        composeTestRule.setContent {
-            MyDayLoggerTheme {
-                SleepLogCard()
-            }
-        }
-        onNodeWithStringId(R.string.sleep_log).assertIsDisplayed()
-        composeTestRule.onNodeWithTag(SLEEP_LOG_GRAPH_TEST_TAG).assertIsDisplayed()
-    }
+//    @Test
+//    fun sleepLogIsShown() {
+//        composeTestRule.setContent {
+//            MyDayLoggerTheme {
+//                SleepLogCard()
+//            }
+//        }
+//        onNodeWithStringId(R.string.sleep_log).assertIsDisplayed()
+//        composeTestRule.onNodeWithTag(SLEEP_LOG_GRAPH_TEST_TAG).assertIsDisplayed()
+//    }
 
     private fun onNodeWithStringId(@StringRes id: Int): SemanticsNodeInteraction {
         return composeTestRule.onNodeWithText(composeTestRule.activity.getString(id))

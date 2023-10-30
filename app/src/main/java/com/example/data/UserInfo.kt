@@ -12,6 +12,7 @@ data class UserInfo (
     val age: Int,
     val height: Int,
     val weight: Double,
-    val gender: String
+    val gender: String,
+    val emergencyContact: Number
 ) {
 }
