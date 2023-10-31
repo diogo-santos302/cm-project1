@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -61,6 +62,8 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.navigation:navigation-compose:2.7.4")
     implementation("io.coil-kt:coil-compose:1.3.2")
+    implementation("com.google.firebase:firebase-messaging:23.3.1")
+//    implementation("com.google.firebase:firebase-messaging-directboot:23.3.1") // Needed to receive notifications while phone is locked
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
