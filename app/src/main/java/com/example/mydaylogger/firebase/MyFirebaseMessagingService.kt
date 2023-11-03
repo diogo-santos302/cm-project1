@@ -42,17 +42,4 @@ class MyFirebaseMessagingService: FirebaseMessagingService() {
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
     }
-
-    fun getCurrentToken(): String {
-        lateinit var token: String
-        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                Log.w(TAG, "Fetching FCM registration token failed", task.exception)
-                return@OnCompleteListener
-            }
-            token = task.result
-            Log.d(TAG, "Current token: $token")
-        })
-        return token
-    }
 }

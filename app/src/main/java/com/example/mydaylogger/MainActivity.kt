@@ -16,8 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import com.example.mydaylogger.location.CurrentLocationService
 import com.example.mydaylogger.location.GeofencingService
+import com.example.mydaylogger.notifications.NotificationManager
 import com.example.mydaylogger.ui.theme.MyDayLoggerTheme
 import com.example.mydaylogger.ui.ProfileScreen
+import com.google.firebase.Firebase
+import com.google.firebase.functions.functions
+import com.google.firebase.messaging.messaging
 
 private const val TAG = "MainActivity"
 
@@ -62,9 +66,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         geofencingService = GeofencingService(this)
         currentLocationService = CurrentLocationService(this)
-        askNotificationPermission()
-        askLocationPermission()
-
+//        askNotificationPermission()
+//        askLocationPermission()
+        val notificationManager = NotificationManager()
+        val firebaseToken = Firebase.messaging.token.result
+        Log.d(TAG, firebaseToken)
+        notificationManager.sendNotification(firebaseToken, "Hello World", "Yo")
         setContent {
             MyDayLoggerTheme {
                 // A surface container using the 'background' color from the theme
@@ -90,7 +97,6 @@ class MainActivity : ComponentActivity() {
                 //       "OK" and "No thanks" buttons. If the user selects "OK," directly request the permission.
                 //       If the user selects "No thanks," allow the user to continue without notifications.
             } else {
-                // Directly ask for the permission
                 notificationPermissionRequest.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         }

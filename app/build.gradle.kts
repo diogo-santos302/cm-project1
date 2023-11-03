@@ -62,8 +62,6 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.navigation:navigation-compose:2.7.4")
     implementation("io.coil-kt:coil-compose:1.3.2")
-    implementation("com.google.firebase:firebase-messaging:23.3.1")
-//    implementation("com.google.firebase:firebase-messaging-directboot:23.3.1") // Needed to receive notifications while phone is locked
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -75,6 +73,13 @@ dependencies {
 
     // Google Play services
     implementation("com.google.android.gms:play-services-location:21.0.1")
+
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.5.0"))
+    implementation("com.google.firebase:firebase-messaging:23.3.1")
+    implementation("com.google.firebase:firebase-database")
+    implementation("com.google.firebase:firebase-functions:20.4.0")
+//    implementation("com.google.firebase:firebase-messaging-directboot:23.3.1") // Needed to receive notifications while phone is locked
 
     // Charts
     implementation("co.yml:ycharts:2.1.0")
