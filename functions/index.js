@@ -19,7 +19,7 @@ const {onCall} = require("firebase-functions/v2/https");
 //   response.send("Hello from Firebase!");
 // });
 
-// const functions = require('firebase-functions');
+const functions = require("firebase-functions");
 // Import and initialize the Firebase Admin SDK.
 const admin = require("firebase-admin");
 admin.initializeApp();
@@ -27,19 +27,52 @@ admin.initializeApp();
 const {messaging} = require("firebase-admin");
 
 exports.sendNotification = onCall(request => {
+  sendMessage(request.data.token, request.data.title, request.data.body)
+});
+
+exports.sendNotificationToCaretakerOnAssignListener =
+  functions.database.ref("/caretakers/{caretakerPhoneNumber}")
+  .onWrite((change, context) => {
+      const beforeData = change.before.val();
+      const beforeUsers = beforeData["users"]
+      const afterData = change.after.val();
+      const afterUsers = afterData["users"]
+      for (const afterUser of afterUsers) {
+        if (!beforeUsers.includes(afterUser)) {
+          sendMessageToCaretaker(afterUser)
+        }
+      }
+      return null;
+  });
+
+function sendMessageToCaretaker(newUser) {
+  const newUserRef = admin.database().ref(`/users/${newUser}`)
+  newUserRef.once('value', snapshot => {
+    const newUserData = snapshot.val();
+    if (newUserData) {
+      const title = "New user";
+      const newUserName = newUserData["name"];
+      const newUserToken = newUserData["token"];
+      const body = `The user ${newUserName} with phone number ${newUser} ` +
+        `has added you as their caretaker!`
+      sendMessage(newUserToken, title, body)
+    }
+  });
+}
+
+function sendMessage(token, title, body) {
   const message = {
     notification: {
-      title: request.data.title,
-      body: request.data.body,
+      title: title,
+      body: body,
     },
-    token: request.data.token,
+    token: token,
   };
-
   messaging().send(message)
-      .then((response) => {
-        console.log("Successfully sent message:", response);
-      })
-      .catch((error) => {
-        console.log("Error sending message:", error);
-      });
-});
+    .then((response) => {
+      console.log("Successfully sent message:", response);
+    })
+    .catch((error) => {
+      console.log("Error sending message:", error);
+    });
+}
