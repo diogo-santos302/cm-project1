@@ -3,6 +3,7 @@ package com.example.mydaylogger.data
 import android.util.Log
 import com.example.mydaylogger.firebase.Caretaker
 import com.example.mydaylogger.firebase.MyRealtimeDatabase
+import com.example.mydaylogger.firebase.User
 import com.example.mydaylogger.firebase.UserGender
 
 private const val TAG = "DatabaseManager"
@@ -92,5 +93,9 @@ class DatabaseManager(private val databaseInstance: MyRealtimeDatabase) {
             callback(it?.users?.keys ?: setOf())
         }
         Log.i(TAG, "getPhoneNumbersOfCaretakerUsers")
+    }
+
+    fun getUser(phoneNumber: String, callback: (User?) -> Unit) {
+        databaseInstance.readUser(phoneNumber, callback)
     }
 }

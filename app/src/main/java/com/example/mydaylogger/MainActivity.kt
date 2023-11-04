@@ -78,7 +78,10 @@ class MainActivity : ComponentActivity() {
 //        databaseManager.updateUser(phoneNumber="929292929", caretakerPhoneNumber = "909090909")
 //        databaseManager.updateUser(phoneNumber="919191919", caretakerPhoneNumber = "909090909")
 //        databaseManager.addNewUser(phoneNumber="929292929", name="Alice", firebaseToken = Firebase.messaging.token.result, caretakerPhoneNumber = "919191919")
-        databaseManager.getPhoneNumbersOfCaretakerUsers("909090909") {
+//        databaseManager.getPhoneNumbersOfCaretakerUsers("909090909") {
+//            Log.d(TAG, it.toString())
+//        }
+        databaseManager.getUser("919191919") {
             Log.d(TAG, it.toString())
         }
         setContent {
