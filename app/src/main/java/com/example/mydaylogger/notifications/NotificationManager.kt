@@ -1,10 +1,9 @@
 package com.example.mydaylogger.notifications
 
 import android.util.Log
+import com.example.mydaylogger.firebase.MyFirebaseFunctions
 import com.example.mydaylogger.location.Geofence
-import com.google.firebase.Firebase
 import com.google.firebase.functions.HttpsCallableReference
-import com.google.firebase.functions.functions
 import com.google.gson.Gson
 
 private const val TAG = "NotificationManager"
@@ -12,43 +11,36 @@ private const val SEND_NOTIFICATION_CALLABLE = "sendNotification"
 private const val SEND_DATA_MESSAGE_CALLABLE = "sendDataMessage"
 
 class NotificationManager {
-    private val functions = Firebase.functions
-
-    init {
-        functions.useEmulator("10.0.2.2", 5001)
-    }
+    private val firebaseFunctions = MyFirebaseFunctions()
+    private lateinit var messageCallable: HttpsCallableReference
+    private var message = hashMapOf<String, Any>()
 
     fun sendNotification(destinationFcmToken: String, title: String, body: String) {
-        val messageCallable = functions.getHttpsCallable(SEND_NOTIFICATION_CALLABLE)
-        val notification = hashMapOf(
+        messageCallable = firebaseFunctions.getHttpsCallable(SEND_NOTIFICATION_CALLABLE)
+        message = hashMapOf(
             "token" to destinationFcmToken,
             "title" to title,
             "body" to body
         )
-        messageCallable.call(notification)
-            .continueWith { task ->
-                if (task.isSuccessful) {
-                    Log.d(TAG, "Successfully sent notification")
-                } else {
-                    val exception = task.exception
-                    Log.e(TAG, "Error sending notification", exception)
-                }
-            }
+        sendMessage()
     }
 
     fun sendDataMessage(destinationFcmToken: String, data: Geofence) {
-        val messageCallable = functions.getHttpsCallable(SEND_DATA_MESSAGE_CALLABLE)
-        val stringData = hashMapOf(
-            "latitude" to data.latitude.toString(),
-            "longitude" to data.longitude.toString(),
-            "radiusInMetres" to data.radiusInMetres.toString()
+        messageCallable = firebaseFunctions.getHttpsCallable(SEND_DATA_MESSAGE_CALLABLE)
+        val geofenceData = GeofenceData(
+            data.latitude.toString(),
+            data.longitude.toString(),
+            data.radiusInMetres.toString()
         )
-        val gson = Gson()
-        val dataJson = gson.toJson(stringData)
-        val message = hashMapOf(
+        val dataJson = Gson().toJson(geofenceData)
+        message = hashMapOf(
             "token" to destinationFcmToken,
             "data" to dataJson,
         )
+        sendMessage()
+    }
+
+    private fun sendMessage() {
         messageCallable.call(message)
             .continueWith { task ->
                 if (task.isSuccessful) {
