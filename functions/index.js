@@ -34,26 +34,56 @@ exports.sendNotificationToCaretakerOnAssignListener =
   functions.database.ref("/caretakers/{caretakerPhoneNumber}/users/{newUser}")
   .onWrite((change, context) => {
       const userDataAfter = change.after.val();
-      const newUser = context.params.newUser;
       if (userDataAfter) {
-        sendMessageToCaretaker(newUser)
+        sendMessageToCaretaker(context.params.newUser, context.params.caretakerPhoneNumber);
       }
       return null;
   });
 
-function sendMessageToCaretaker(newUser) {
-  const newUserRef = admin.database().ref(`/users/${newUser}`)
-  newUserRef.once('value', snapshot => {
-    const newUserData = snapshot.val();
-    if (newUserData) {
-      const title = "New user";
-      const newUserName = newUserData["name"];
-      const newUserToken = newUserData["firebaseToken"];
-      const body = `The user ${newUserName} with phone number ${newUser} ` +
-        `has added you as their caretaker!`
-      sendMessage(newUserToken, title, body)
+async function sendMessageToCaretaker(newUser, caretaker) {
+  const title = "New user";
+  const newUserName = await getNewUserName(newUser);
+  if (!newUserName) {
+    return;
+  }
+  const caretakerToken = await getCaretakerToken(caretaker);
+  if (!caretakerToken) {
+    return;
+  }
+  const body = `The user ${newUserName} with phone number ${newUser} ` +
+    `has added you as their caretaker!`;
+  sendMessage(caretakerToken, title, body);
+}
+
+async function getNewUserName(newUser) {
+  const newUserData = await getUserData(newUser);
+  if (!newUserData) {
+    return null;
+  }
+  return newUserData["name"];
+}
+
+async function getCaretakerToken(caretaker) {
+  const caretakerData = await getUserData(caretaker);
+  if (!caretakerData) {
+    return null;
+  }
+  return caretakerData["firebaseToken"];
+}
+
+async function getUserData(phoneNumber) {
+  const ref = admin.database().ref(`/users/${phoneNumber}`);
+  try {
+    const snapshot = await ref.once('value');
+    const data = snapshot.val();
+    if (!data) {
+      return null;
     }
-  });
+    return data;
+  } catch (error) {
+    console.error("Error fetching data: ", error);
+    return null;
+  }
 }
 
 function sendMessage(token, title, body) {
