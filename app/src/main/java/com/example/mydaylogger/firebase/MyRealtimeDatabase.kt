@@ -77,6 +77,15 @@ object MyRealtimeDatabase {
         Log.i(TAG, "readUser")
     }
 
+    fun readCaretaker(phoneNumber: String, callback: (Caretaker?) -> Unit) {
+        val caretakerReference = database.child("caretakers").child(phoneNumber)
+        caretakerReference.readOnce {
+            val caretaker = it?.getValue<Caretaker>()
+            callback(caretaker)
+        }
+        Log.i(TAG, "readCaretaker")
+    }
+
     private fun DatabaseReference.readOnce(onRead: (DataSnapshot?) -> Unit) {
         addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {

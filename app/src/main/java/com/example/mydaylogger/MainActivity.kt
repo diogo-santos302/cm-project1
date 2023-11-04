@@ -75,8 +75,12 @@ class MainActivity : ComponentActivity() {
 //        Log.d(TAG, firebaseToken)
 //        notificationManager.sendNotification(firebaseToken, "Hello World", "Yo")
         val databaseManager = DatabaseManager(MyRealtimeDatabase)
-        databaseManager.updateUser(phoneNumber="929292929", caretakerPhoneNumber = "")
+//        databaseManager.updateUser(phoneNumber="929292929", caretakerPhoneNumber = "909090909")
+//        databaseManager.updateUser(phoneNumber="919191919", caretakerPhoneNumber = "909090909")
 //        databaseManager.addNewUser(phoneNumber="929292929", name="Alice", firebaseToken = Firebase.messaging.token.result, caretakerPhoneNumber = "919191919")
+        databaseManager.getPhoneNumbersOfCaretakerUsers("909090909") {
+            Log.d(TAG, it.toString())
+        }
         setContent {
             MyDayLoggerTheme {
                 // A surface container using the 'background' color from the theme

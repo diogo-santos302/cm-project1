@@ -1,6 +1,7 @@
 package com.example.mydaylogger.data
 
 import android.util.Log
+import com.example.mydaylogger.firebase.Caretaker
 import com.example.mydaylogger.firebase.MyRealtimeDatabase
 import com.example.mydaylogger.firebase.UserGender
 
@@ -84,5 +85,12 @@ class DatabaseManager(private val databaseInstance: MyRealtimeDatabase) {
 
     private fun dissociateUserFromCaretaker(userPhoneNumber: String, caretakerPhoneNumber: String) {
         databaseInstance.removeUserFromCaretaker(userPhoneNumber, caretakerPhoneNumber)
+    }
+
+    fun getPhoneNumbersOfCaretakerUsers(phoneNumber: String, callback: (Set<String>?) -> Unit) {
+        databaseInstance.readCaretaker(phoneNumber) {
+            callback(it?.users?.keys ?: setOf())
+        }
+        Log.i(TAG, "getPhoneNumbersOfCaretakerUsers")
     }
 }
