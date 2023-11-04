@@ -5,7 +5,6 @@ import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.GenericTypeIndicator
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import com.google.firebase.database.getValue
@@ -73,20 +72,26 @@ object MyRealtimeDatabase {
         caretakerPhoneNumber: String
     ) {
         val caretakerReference = userReference.child("caretaker")
-        caretakerReference.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val previousCaretaker = dataSnapshot.value.toString()
-                if (previousCaretaker != "null") {
-                    dissociateUserFromCaretaker(userPhoneNumber, previousCaretaker);
-                }
-                caretakerReference.setValue(caretakerPhoneNumber)
-                if (caretakerPhoneNumber.isNotEmpty()) {
-                    associateUserToCaretaker(userPhoneNumber, caretakerPhoneNumber)
-                }
+        caretakerReference.readOnce {
+            val previousCaretaker = it?.value
+            if (previousCaretaker != null) {
+                dissociateUserFromCaretaker(userPhoneNumber, previousCaretaker.toString());
+            }
+            caretakerReference.setValue(caretakerPhoneNumber)
+            if (caretakerPhoneNumber.isNotEmpty()) {
+                associateUserToCaretaker(userPhoneNumber, caretakerPhoneNumber)
+            }
+        }
+    }
+
+    private fun DatabaseReference.readOnce(onRead: (DataSnapshot?) -> Unit) {
+        addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                onRead(snapshot)
             }
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                Log.w(TAG, "handleCaretakerUpdate:onCancelled", databaseError.toException())
+            override fun onCancelled(error: DatabaseError) {
+                onRead(null)
             }
         })
     }
@@ -98,17 +103,10 @@ object MyRealtimeDatabase {
 
     fun readUser(phoneNumber: String, callback: (User?) -> Unit) {
         val userReference = database.child("users").child(phoneNumber)
-        val userListener = object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                Log.d(TAG, "readUser:onDataChange")
-                val user = snapshot.getValue<User>()
-                callback(user)
-            }
-            override fun onCancelled(error: DatabaseError) {
-                Log.w(TAG, "readUser:onCancelled", error.toException())
-                callback(null)
-            }
+        userReference.readOnce {
+            val user = it?.getValue<User>()
+            callback(user)
         }
-        userReference.addListenerForSingleValueEvent(userListener)
+        Log.i(TAG, "readUser")
     }
 }
