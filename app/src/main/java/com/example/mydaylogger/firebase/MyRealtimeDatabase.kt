@@ -4,6 +4,8 @@ import android.util.Log
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.GenericTypeIndicator
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import com.google.firebase.database.getValue
@@ -33,15 +35,15 @@ object MyRealtimeDatabase {
             caretakerPhoneNumber
         )
         database.child("users").child(phoneNumber).setValue(user)
-        associateUserToCaretaker(phoneNumber, caretakerPhoneNumber)
+        if (caretakerPhoneNumber.isNotEmpty()) {
+            associateUserToCaretaker(phoneNumber, caretakerPhoneNumber)
+        }
         Log.d(TAG, "createNewUser")
     }
 
     private fun associateUserToCaretaker(userPhoneNumber: String, caretakerPhoneNumber: String) {
-        if (caretakerPhoneNumber.isNotEmpty()) {
-            val pathToCaretakerUser = "caretakers/$caretakerPhoneNumber/users/$userPhoneNumber"
-            database.child(pathToCaretakerUser).setValue(true)
-        }
+        val pathToCaretakerUser = "caretakers/$caretakerPhoneNumber/users/$userPhoneNumber"
+        database.child(pathToCaretakerUser).setValue(true)
     }
 
     fun updateUser(
@@ -61,8 +63,37 @@ object MyRealtimeDatabase {
         weight?.let { userReference.child("weight").setValue(it) }
         gender?.let { userReference.child("gender").setValue(it.text) }
         firebaseToken?.let { userReference.child("firebaseToken").setValue(it) }
-        caretakerPhoneNumber?.let { userReference.child("caretaker").setValue(it) }
+        caretakerPhoneNumber?.let { handleCaretakerUpdate(userReference, phoneNumber, it) }
         Log.d(TAG, "updateUser")
+    }
+
+    private fun handleCaretakerUpdate(
+        userReference: DatabaseReference,
+        userPhoneNumber: String,
+        caretakerPhoneNumber: String
+    ) {
+        val caretakerReference = userReference.child("caretaker")
+        caretakerReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val previousCaretaker = dataSnapshot.value.toString()
+                if (previousCaretaker != "null") {
+                    dissociateUserFromCaretaker(userPhoneNumber, previousCaretaker);
+                }
+                caretakerReference.setValue(caretakerPhoneNumber)
+                if (caretakerPhoneNumber.isNotEmpty()) {
+                    associateUserToCaretaker(userPhoneNumber, caretakerPhoneNumber)
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.w(TAG, "handleCaretakerUpdate:onCancelled", databaseError.toException())
+            }
+        })
+    }
+
+    private fun dissociateUserFromCaretaker(userPhoneNumber: String, caretakerPhoneNumber: String) {
+        val pathToCaretakerUser = "caretakers/$caretakerPhoneNumber/users/$userPhoneNumber"
+        database.child(pathToCaretakerUser).removeValue()
     }
 
     fun readUser(phoneNumber: String, callback: (User?) -> Unit) {
