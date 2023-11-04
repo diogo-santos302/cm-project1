@@ -31,16 +31,12 @@ exports.sendNotification = onCall(request => {
 });
 
 exports.sendNotificationToCaretakerOnAssignListener =
-  functions.database.ref("/caretakers/{caretakerPhoneNumber}")
+  functions.database.ref("/caretakers/{caretakerPhoneNumber}/users/{newUser}")
   .onWrite((change, context) => {
-      const beforeData = change.before.val();
-      const beforeUsers = beforeData["users"]
-      const afterData = change.after.val();
-      const afterUsers = afterData["users"]
-      for (const afterUser of afterUsers) {
-        if (!beforeUsers.includes(afterUser)) {
-          sendMessageToCaretaker(afterUser)
-        }
+      const userDataAfter = change.after.val();
+      const newUser = context.params.newUser;
+      if (userDataAfter) {
+        sendMessageToCaretaker(newUser)
       }
       return null;
   });
@@ -52,7 +48,7 @@ function sendMessageToCaretaker(newUser) {
     if (newUserData) {
       const title = "New user";
       const newUserName = newUserData["name"];
-      const newUserToken = newUserData["token"];
+      const newUserToken = newUserData["firebaseToken"];
       const body = `The user ${newUserName} with phone number ${newUser} ` +
         `has added you as their caretaker!`
       sendMessage(newUserToken, title, body)

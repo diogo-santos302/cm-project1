@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
+import com.example.mydaylogger.firebase.MyRealtimeDatabase
 import com.example.mydaylogger.location.CurrentLocationService
 import com.example.mydaylogger.location.GeofencingService
 import com.example.mydaylogger.notifications.NotificationManager
@@ -68,10 +69,11 @@ class MainActivity : ComponentActivity() {
         currentLocationService = CurrentLocationService(this)
 //        askNotificationPermission()
 //        askLocationPermission()
-        val notificationManager = NotificationManager()
-        val firebaseToken = Firebase.messaging.token.result
-        Log.d(TAG, firebaseToken)
-        notificationManager.sendNotification(firebaseToken, "Hello World", "Yo")
+//        val notificationManager = NotificationManager()
+//        val firebaseToken = Firebase.messaging.token.result
+//        Log.d(TAG, firebaseToken)
+//        notificationManager.sendNotification(firebaseToken, "Hello World", "Yo")
+        MyRealtimeDatabase.createNewUser(phoneNumber="919191919", name="Bob", firebaseToken = Firebase.messaging.token.result, caretakerPhoneNumber = "929292929")
         setContent {
             MyDayLoggerTheme {
                 // A surface container using the 'background' color from the theme

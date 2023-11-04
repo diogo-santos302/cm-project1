@@ -33,7 +33,15 @@ object MyRealtimeDatabase {
             caretakerPhoneNumber
         )
         database.child("users").child(phoneNumber).setValue(user)
+        associateUserToCaretaker(phoneNumber, caretakerPhoneNumber)
         Log.d(TAG, "createNewUser")
+    }
+
+    private fun associateUserToCaretaker(userPhoneNumber: String, caretakerPhoneNumber: String) {
+        if (caretakerPhoneNumber.isNotEmpty()) {
+            val pathToCaretakerUser = "caretakers/$caretakerPhoneNumber/users/$userPhoneNumber"
+            database.child(pathToCaretakerUser).setValue(true)
+        }
     }
 
     fun updateUser(
