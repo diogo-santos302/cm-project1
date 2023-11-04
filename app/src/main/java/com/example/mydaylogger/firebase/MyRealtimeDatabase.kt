@@ -34,13 +34,10 @@ object MyRealtimeDatabase {
             caretakerPhoneNumber
         )
         database.child("users").child(phoneNumber).setValue(user)
-        if (caretakerPhoneNumber.isNotEmpty()) {
-            associateUserToCaretaker(phoneNumber, caretakerPhoneNumber)
-        }
         Log.d(TAG, "createNewUser")
     }
 
-    private fun associateUserToCaretaker(userPhoneNumber: String, caretakerPhoneNumber: String) {
+    fun addUserToCaretaker(userPhoneNumber: String, caretakerPhoneNumber: String) {
         val pathToCaretakerUser = "caretakers/$caretakerPhoneNumber/users/$userPhoneNumber"
         database.child(pathToCaretakerUser).setValue(true)
     }
@@ -62,26 +59,22 @@ object MyRealtimeDatabase {
         weight?.let { userReference.child("weight").setValue(it) }
         gender?.let { userReference.child("gender").setValue(it.text) }
         firebaseToken?.let { userReference.child("firebaseToken").setValue(it) }
-        caretakerPhoneNumber?.let { handleCaretakerUpdate(userReference, phoneNumber, it) }
+        caretakerPhoneNumber?.let { userReference.child("caretaker").setValue(it) }
         Log.d(TAG, "updateUser")
     }
 
-    private fun handleCaretakerUpdate(
-        userReference: DatabaseReference,
-        userPhoneNumber: String,
-        caretakerPhoneNumber: String
-    ) {
-        val caretakerReference = userReference.child("caretaker")
-        caretakerReference.readOnce {
-            val previousCaretaker = it?.value
-            if (previousCaretaker != null) {
-                dissociateUserFromCaretaker(userPhoneNumber, previousCaretaker.toString());
-            }
-            caretakerReference.setValue(caretakerPhoneNumber)
-            if (caretakerPhoneNumber.isNotEmpty()) {
-                associateUserToCaretaker(userPhoneNumber, caretakerPhoneNumber)
-            }
+    fun removeUserFromCaretaker(userPhoneNumber: String, caretakerPhoneNumber: String) {
+        val pathToCaretakerUser = "caretakers/$caretakerPhoneNumber/users/$userPhoneNumber"
+        database.child(pathToCaretakerUser).removeValue()
+    }
+
+    fun readUser(phoneNumber: String, callback: (User?) -> Unit) {
+        val userReference = database.child("users").child(phoneNumber)
+        userReference.readOnce {
+            val user = it?.getValue<User>()
+            callback(user)
         }
+        Log.i(TAG, "readUser")
     }
 
     private fun DatabaseReference.readOnce(onRead: (DataSnapshot?) -> Unit) {
@@ -94,19 +87,5 @@ object MyRealtimeDatabase {
                 onRead(null)
             }
         })
-    }
-
-    private fun dissociateUserFromCaretaker(userPhoneNumber: String, caretakerPhoneNumber: String) {
-        val pathToCaretakerUser = "caretakers/$caretakerPhoneNumber/users/$userPhoneNumber"
-        database.child(pathToCaretakerUser).removeValue()
-    }
-
-    fun readUser(phoneNumber: String, callback: (User?) -> Unit) {
-        val userReference = database.child("users").child(phoneNumber)
-        userReference.readOnce {
-            val user = it?.getValue<User>()
-            callback(user)
-        }
-        Log.i(TAG, "readUser")
     }
 }
