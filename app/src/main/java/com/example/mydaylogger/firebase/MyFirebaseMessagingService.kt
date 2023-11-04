@@ -23,6 +23,9 @@ class MyFirebaseMessagingService: FirebaseMessagingService() {
         // Check if message contains a data payload.
         if (remoteMessage.data.isNotEmpty()) {
             Log.d(TAG, "Message data payload: ${remoteMessage.data}")
+            remoteMessage.data["latitude"]?.let { Log.d(TAG, it) }
+            remoteMessage.data["longitude"]?.let { Log.d(TAG, it) }
+            remoteMessage.data["radiusInMetres"]?.let { Log.d(TAG, it) }
 
             // Check if data needs to be processed by long running job
 //            if (needsToBeScheduled()) {

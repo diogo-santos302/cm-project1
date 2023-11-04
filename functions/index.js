@@ -27,8 +27,27 @@ admin.initializeApp();
 const {messaging} = require("firebase-admin");
 
 exports.sendNotification = onCall(request => {
-  sendMessage(request.data.token, request.data.title, request.data.body)
+  sendNotification(request.data.token, request.data.title, request.data.body)
 });
+
+exports.sendDataMessage = onCall(request => {
+  sendDataMessage(request.data.token, request.data.data)
+});
+
+function sendDataMessage(token, data) {
+  const dataObject = JSON.parse(data);
+  const message = {
+    data: dataObject,
+    token: token,
+  };
+  messaging().send(message)
+    .then((response) => {
+      console.log("Successfully sent message:", response);
+    })
+    .catch((error) => {
+      console.log("Error sending message:", error);
+    });
+}
 
 exports.sendNotificationToCaretakerOnAssignListener =
   functions.database.ref("/caretakers/{caretakerPhoneNumber}/users/{newUser}")
@@ -52,7 +71,7 @@ async function sendMessageToCaretaker(newUser, caretaker) {
   }
   const body = `The user ${newUserName} with phone number ${newUser} ` +
     `has added you as their caretaker!`;
-  sendMessage(caretakerToken, title, body);
+  sendNotification(caretakerToken, title, body);
 }
 
 async function getNewUserName(newUser) {
@@ -86,7 +105,7 @@ async function getUserData(phoneNumber) {
   }
 }
 
-function sendMessage(token, title, body) {
+function sendNotification(token, title, body) {
   const message = {
     notification: {
       title: title,

@@ -74,6 +74,8 @@ dependencies {
     // Google Play services
     implementation("com.google.android.gms:play-services-location:21.0.1")
 
+    implementation("com.google.code.gson:gson:2.9.0")
+
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:32.5.0"))
     implementation("com.google.firebase:firebase-messaging:23.3.1")

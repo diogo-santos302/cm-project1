@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat
 import com.example.mydaylogger.data.DatabaseManager
 import com.example.mydaylogger.firebase.MyRealtimeDatabase
 import com.example.mydaylogger.location.CurrentLocationService
+import com.example.mydaylogger.location.Geofence
 import com.example.mydaylogger.location.GeofencingService
 import com.example.mydaylogger.notifications.NotificationManager
 import com.example.mydaylogger.ui.theme.MyDayLoggerTheme
@@ -68,22 +69,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         geofencingService = GeofencingService(this)
         currentLocationService = CurrentLocationService(this)
-//        askNotificationPermission()
-//        askLocationPermission()
-//        val notificationManager = NotificationManager()
-//        val firebaseToken = Firebase.messaging.token.result
-//        Log.d(TAG, firebaseToken)
-//        notificationManager.sendNotification(firebaseToken, "Hello World", "Yo")
-        val databaseManager = DatabaseManager(MyRealtimeDatabase)
-//        databaseManager.updateUser(phoneNumber="929292929", caretakerPhoneNumber = "909090909")
-//        databaseManager.updateUser(phoneNumber="919191919", caretakerPhoneNumber = "909090909")
-//        databaseManager.addNewUser(phoneNumber="929292929", name="Alice", firebaseToken = Firebase.messaging.token.result, caretakerPhoneNumber = "919191919")
-//        databaseManager.getPhoneNumbersOfCaretakerUsers("909090909") {
-//            Log.d(TAG, it.toString())
-//        }
-        databaseManager.getUser("919191919") {
-            Log.d(TAG, it.toString())
-        }
+        val notificationManager = NotificationManager()
+        notificationManager.sendDataMessage(Firebase.messaging.token.result, Geofence(40.0, 80.0, 100f))
         setContent {
             MyDayLoggerTheme {
                 // A surface container using the 'background' color from the theme
