@@ -31,7 +31,7 @@ import co.yml.charts.ui.linechart.model.LineChartData
 import co.yml.charts.ui.linechart.model.LinePlotData
 import co.yml.charts.ui.linechart.model.LineStyle
 import co.yml.charts.ui.linechart.model.LineType
-import com.example.mydaylogger.R
+import com.example.R
 import com.example.mydaylogger.ui.theme.MyDayLoggerTheme
 
 const val STEPS_PROGRESS_BAR_TEST_TAG = "stepsProgressBar"
@@ -112,6 +112,41 @@ fun HeartRateCard(values: List<Int>, modifier: Modifier = Modifier) {
     }
 }
 
+
+private fun getLinesFromHeartRates(values: List<Int>, color: Color = Color.Red): List<Line> {
+    val points = values.mapIndexed { index, value -> Point(index.toFloat(), value.toFloat()) }
+    val lines = mutableListOf<Line>()
+    for (i in 0 until (points.size - 1)) {
+        lines.add(Line(
+            listOf(points[i], points[i+1]),
+            LineStyle(lineType = LineType.Straight(), color = color),
+            IntersectionPoint(radius = 4.dp, color = color)
+        ))
+    }
+    return lines
+}
+
+private fun getLineChartDataFromLinesNoAxis(lines: List<Line>): LineChartData {
+    val linePlotData = LinePlotData(plotType = PlotType.Line, lines = lines)
+    val xAxisData = AxisData.Builder()
+        .axisConfig(AxisConfig(isAxisLineRequired = false))
+        .build()
+    val yAxisData = AxisData.Builder()
+        .axisConfig(AxisConfig(isAxisLineRequired = false))
+        .build()
+//    val yAxisData = AxisData.Builder()
+//        .steps(5)
+//        .labelAndAxisLinePadding(20.dp)
+//        .axisPosition(Gravity.LEFT)
+//        .labelData { i ->
+//            val yMin = 0
+//            val yMax = points.maxOf { it.y }
+//            val yScale = (yMax - yMin) / 5
+//            ((i * yScale) + yMin).formatToSinglePrecision()
+//        }.build()
+    return LineChartData(linePlotData = linePlotData, xAxisData = xAxisData, yAxisData = yAxisData)
+}
+
 //@Composable
 //fun SleepLogCard(values: List<Time>, modifier: Modifier = Modifier) {
 //    val maxRange = values.max()
@@ -149,40 +184,6 @@ fun HeartRateCard(values: List<Int>, modifier: Modifier = Modifier) {
 //    }
 //}
 
-private fun getLinesFromHeartRates(values: List<Int>, color: Color = Color.Red): List<Line> {
-    val points = values.mapIndexed { index, value -> Point(index.toFloat(), value.toFloat()) }
-    val lines = mutableListOf<Line>()
-    for (i in 0 until (points.size - 1)) {
-        lines.add(Line(
-            listOf(points[i], points[i+1]),
-            LineStyle(lineType = LineType.Straight(), color = color),
-            IntersectionPoint(radius = 4.dp, color = color)
-        ))
-    }
-    return lines
-}
-
-private fun getLineChartDataFromLinesNoAxis(lines: List<Line>): LineChartData {
-    val linePlotData = LinePlotData(plotType = PlotType.Line, lines = lines)
-    val xAxisData = AxisData.Builder()
-        .axisConfig(AxisConfig(isAxisLineRequired = false))
-        .build()
-    val yAxisData = AxisData.Builder()
-        .axisConfig(AxisConfig(isAxisLineRequired = false))
-        .build()
-//    val yAxisData = AxisData.Builder()
-//        .steps(5)
-//        .labelAndAxisLinePadding(20.dp)
-//        .axisPosition(Gravity.LEFT)
-//        .labelData { i ->
-//            val yMin = 0
-//            val yMax = points.maxOf { it.y }
-//            val yScale = (yMax - yMin) / 5
-//            ((i * yScale) + yMin).formatToSinglePrecision()
-//        }.build()
-    return LineChartData(linePlotData = linePlotData, xAxisData = xAxisData, yAxisData = yAxisData)
-}
-
 @Preview()
 @Composable
 fun PreviewStepsCard() {
@@ -199,10 +200,11 @@ fun PreviewHeartRateCard() {
     }
 }
 
-@Preview
-@Composable
-fun PreviewSleepLog() {
-    MyDayLoggerTheme {
-        //SleepLogCard()
-    }
-}
+
+//@Preview
+//@Composable
+//fun PreviewSleepLog() {
+//    MyDayLoggerTheme {
+//        SleepLogCard()
+//    }
+//}

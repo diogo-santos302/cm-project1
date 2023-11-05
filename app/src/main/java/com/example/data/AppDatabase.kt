@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase
 //creating singleton for room database
 
 @Database (entities = [UserInfo::class], version = 1, exportSchema = false)
-abstract class UserDatabase : RoomDatabase() {
+abstract class AppDatabase : RoomDatabase() {
 
     abstract fun userInfoDao(): UserInfoDao
 
@@ -18,12 +18,12 @@ abstract class UserDatabase : RoomDatabase() {
     // create a new instance, always using the same instance for room database
     companion object {
         @Volatile
-        private var INSTANCE: UserDatabase? = null
+        private var INSTANCE: AppDatabase? = null
 
 
-        fun getDatabase(context: Context): UserDatabase {
+        fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
-                Room.databaseBuilder(context, UserDatabase::class.java, "user_database")
+                Room.databaseBuilder(context, AppDatabase::class.java, "user_database")
                     .fallbackToDestructiveMigration()
                     .build()
                     .also { INSTANCE = it }

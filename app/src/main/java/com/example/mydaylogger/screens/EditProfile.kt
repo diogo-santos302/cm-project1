@@ -1,6 +1,8 @@
 package com.example.mydaylogger.screens
 
+import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -44,18 +46,22 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.room.Room
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
+import com.example.R
+import com.example.data.AppDatabase
 import com.example.data.UserInfo
-import com.example.mydaylogger.R
 import kotlinx.coroutines.launch
 
+private const val TAGDB = "DBLOUCA"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditProfileScreen(
     navController: NavController,
-    viewModel: EditProfileViewModel
+    context: Context
+    //viewModel: EditProfileViewModel = viewModel(factory= AppViewModelProvider.Factory)
 ){
 
     var name by rememberSaveable { mutableStateOf("") }
@@ -87,20 +93,38 @@ fun EditProfileScreen(
             Text(
                 text = "Save",
                 modifier = Modifier.clickable {
+                    val db by lazy { Room.databaseBuilder(
+                        context,
+                        AppDatabase::class.java, "user_database"
+                    ).build()}
                     coroutineScope.launch {
-                        viewModel.updateUserInfo(
-                            UserInfo(
-                                id = 0, // Replace with the actual user ID
-                                name = name,
-                                age = age.toInt(),
-                                height = height.toInt(),
-                                weight = weight.toDouble(),
-                                gender = gender,
-                                emergencyContact = emergencyContact.toInt()
-                            )
-                        )
+                    db.userInfoDao().insert(
+                        UserInfo(
+                        id = 0, // Replace with the actual user ID
+                        name = name,
+                        age = age.toInt(),
+                        height = height.toInt(),
+                        weight = weight.toDouble(),
+                        gender = gender,
+                        emergencyContact = emergencyContact.toInt()
+                    )
+                    )
+                    Log.d(TAGDB, db.userInfoDao().getUserInfo(0).toString())
                     }
-                    navController.popBackStack()
+/*
+                    coroutineScope.launch {
+                        userInfoRepository.insertUserInfo(UserInfo(
+                            id = 0, // Replace with the actual user ID
+                            name = name,
+                            age = age.toInt(),
+                            height = height.toInt(),
+                            weight = weight.toDouble(),
+                            gender = gender,
+                            emergencyContact = emergencyContact.toInt()
+                        ))
+                    }
+*/
+                   // navController.popBackStack()
                 }
             )
         }

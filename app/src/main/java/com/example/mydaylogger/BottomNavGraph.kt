@@ -1,7 +1,7 @@
 package com.example.mydaylogger
 
+import android.content.Context
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -11,7 +11,7 @@ import com.example.mydaylogger.screens.MaydayScreen
 import com.example.mydaylogger.screens.ProfileScreen
 
 @Composable
-fun BottomNavGraph(navController: NavHostController) {
+fun BottomNavGraph(navController: NavHostController, context: Context) {
     NavHost(
         navController = navController,
         startDestination = BottomBarScreen.Home.route
@@ -26,7 +26,7 @@ fun BottomNavGraph(navController: NavHostController) {
             ProfileScreen(navController = navController)//navController = appState.navController)
         }
         composable(route = BottomBarScreen.EditProfile.route){
-            EditProfileScreen(navController = navController, viewModel = viewModel())
+            EditProfileScreen(navController = navController, context)
         }
     }
 

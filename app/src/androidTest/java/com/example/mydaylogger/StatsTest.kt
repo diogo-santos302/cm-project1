@@ -11,6 +11,7 @@ import com.example.mydaylogger.ui.HEART_RATE_GRAPH_TEST_TAG
 import com.example.mydaylogger.ui.HEART_RATE_TEST_TAG
 import com.example.mydaylogger.ui.HeartRateCard
 import com.example.mydaylogger.ui.STEPS_PROGRESS_BAR_TEST_TAG
+
 import com.example.mydaylogger.ui.StepsCard
 import com.example.mydaylogger.ui.theme.MyDayLoggerTheme
 import org.junit.Rule

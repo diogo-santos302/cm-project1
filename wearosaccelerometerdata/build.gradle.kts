@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.wearosaccelerometerdata"
+    namespace = "com.example"
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "com.example.wearosaccelerometerdata"
+        applicationId = "com.example"
         minSdk = 30
         targetSdk = 33
         versionCode = 1
@@ -21,12 +21,15 @@ android {
 
     buildTypes {
         release {
+
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
+
+
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -63,8 +66,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
     implementation("androidx.activity:activity-compose:1.5.1")
 
-    //Wearable dependency
-    implementation ("com.google.android.gms:play-services-wearable:18.1.0")
+
 
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")

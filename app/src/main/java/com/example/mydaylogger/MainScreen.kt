@@ -1,5 +1,6 @@
 package com.example.mydaylogger
 
+import android.content.Context
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -17,12 +18,12 @@ import androidx.navigation.compose.rememberNavController
 
 
 @Composable
-fun MainScreen() {
+fun MainScreen(context: Context) {
     val navController = rememberNavController()
     Scaffold (
         bottomBar = { BottomBar(navController = navController)}
     ){
-        BottomNavGraph(navController = navController)
+        BottomNavGraph(navController = navController, context = context)
     }
 }
 
@@ -71,6 +72,7 @@ fun RowScope.AddItem(
         } == true,
         onClick = {
             navController.navigate(screen.route){
+
                 popUpTo(navController.graph.findStartDestination().id)
                 launchSingleTop = true
             }

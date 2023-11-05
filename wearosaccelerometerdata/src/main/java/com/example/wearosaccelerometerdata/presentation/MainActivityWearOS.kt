@@ -8,17 +8,29 @@ package com.example.wearosaccelerometerdata.presentation
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.core.content.ContextCompat
+
+
+private const val TAG = "MainActivityWearOS"
 
 class MainActivityWearOS : ComponentActivity() {
 
+    private lateinit var sensorHandler: SensorHandler
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
-            val serviceIntent = Intent(this, SensorService::class.java)
-            ContextCompat.startForegroundService(this, serviceIntent)
+//            val serviceIntent = Intent(this, SensorService::class.java)
+//            ContextCompat.startForegroundService(this, serviceIntent)
+            sensorHandler = SensorHandler(this){xAxis, yAxis, zAxis ->
+                Log.d(TAG,"X: $xAxis, Y: $yAxis, Z: $zAxis")
+
+            val serviceIntent = Intent(this, SensorDataSenderService::class.java)
+            startService(serviceIntent)
+            }
         }
     }
 }
