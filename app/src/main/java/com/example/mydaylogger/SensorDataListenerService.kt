@@ -11,6 +11,7 @@ import com.google.android.gms.wearable.DataMapItem
 import com.google.android.gms.wearable.Wearable
 import java.io.FileNotFoundException
 import java.io.IOException
+import kotlin.math.abs
 
 private const val TAG1 = "SensorDataListenerService"
 private const val X_AXIS_FLOAT_KEY = "com.example.key.xaxisfloat"
@@ -19,6 +20,12 @@ private const val Z_AXIS_FLOAT_KEY = "com.example.key.zaxisfloat"
 class SensorDataListenerService : Service(), DataClient.OnDataChangedListener {
 
     private lateinit var dataClient: DataClient
+
+    private val THRESHOLD = 2.0f
+    private val COUNT_THRESHOLD = 50
+    private var count = 0
+    private var lastUpdateTime = System.currentTimeMillis()
+    private val prevAcelG = floatArrayOf(0.0f, 0.0f, 0.0f)
 
     override fun onCreate() {
         super.onCreate()
@@ -43,6 +50,7 @@ class SensorDataListenerService : Service(), DataClient.OnDataChangedListener {
 
     override fun onDataChanged(dataEvents: DataEventBuffer) {
         Log.d(TAG1, "louco data change");
+        val currentTime = System.currentTimeMillis()
         dataEvents.forEach { event ->
             if (event.type == DataEvent.TYPE_CHANGED) {
                 try {
@@ -50,7 +58,19 @@ class SensorDataListenerService : Service(), DataClient.OnDataChangedListener {
                         if (item.uri.path?.compareTo("/numberranchopt") == 0) {
                             DataMapItem.fromDataItem(item).dataMap.apply {
                                 Log.d(TAG1, "louco: x: ${getFloat(X_AXIS_FLOAT_KEY)} y ${getFloat(Y_AXIS_FLOAT_KEY)} z ${getFloat(Z_AXIS_FLOAT_KEY)}")
+                                val x = getFloat(X_AXIS_FLOAT_KEY)
+                                val y = getFloat(Y_AXIS_FLOAT_KEY)
+                                val z = getFloat(Z_AXIS_FLOAT_KEY)
 
+                                val acelG = floatArrayOf(x, y, z)
+
+                                if (isSuddenChange(acelG)) {
+                                    count ++
+
+                                    Log.d(TAG1, "Sudden change detected: $count" +
+                                            "-------------------------------->")
+
+                                }
 
                             }
                         }
@@ -61,6 +81,32 @@ class SensorDataListenerService : Service(), DataClient.OnDataChangedListener {
             }
         }
 
+        if (currentTime - lastUpdateTime > 50000) {
+            // Reset counter
+            count = 0
+            lastUpdateTime = currentTime
+        }
+
+        if (count >= COUNT_THRESHOLD){
+            //Trigger seizure warning
+            Log.d(TAG1, "--------------------------->Seizure detected")
+            count = 0
+        }
+    }
+
+    fun isSuddenChange(acelG: FloatArray): Boolean {
+
+        for (i in 0 until 3) {
+            val diff = abs(acelG[i] - prevAcelG[i])
+            Log.d(TAG1, "Previous Values: x=${prevAcelG[0]}, y=${prevAcelG[1]}, z=${prevAcelG[2]}")
+
+            if (diff >= THRESHOLD) {
+                prevAcelG[i] = acelG[i]
+                return true
+            }
+            prevAcelG[i] = acelG[i]
+        }
+        return false
     }
 
 
