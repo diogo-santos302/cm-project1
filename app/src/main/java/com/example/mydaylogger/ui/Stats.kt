@@ -112,7 +112,6 @@ fun HeartRateCard(values: List<Int>, modifier: Modifier = Modifier) {
     }
 }
 
-
 private fun getLinesFromHeartRates(values: List<Int>, color: Color = Color.Red): List<Line> {
     val points = values.mapIndexed { index, value -> Point(index.toFloat(), value.toFloat()) }
     val lines = mutableListOf<Line>()
@@ -199,12 +198,3 @@ fun PreviewHeartRateCard() {
         HeartRateCard(values = listOf(74, 60, 82, 90, 105, 69, 30))
     }
 }
-
-
-//@Preview
-//@Composable
-//fun PreviewSleepLog() {
-//    MyDayLoggerTheme {
-//        SleepLogCard()
-//    }
-//}
