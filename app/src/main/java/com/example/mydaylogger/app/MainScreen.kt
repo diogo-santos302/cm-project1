@@ -15,15 +15,16 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.mydaylogger.app.data.AppContainer
 
 
 @Composable
-fun MainScreen(context: Context) {
+fun MainScreen(context: Context, appContainer: AppContainer) {
     val navController = rememberNavController()
     Scaffold (
         bottomBar = { BottomBar(navController = navController) }
     ){
-        BottomNavGraph(navController = navController, context = context)
+        BottomNavGraph(navController = navController, context = context, appContainer = appContainer)
     }
 }
 

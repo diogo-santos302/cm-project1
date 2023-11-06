@@ -69,14 +69,15 @@ dependencies {
 
     //Room
     implementation("androidx.room:room-runtime:2.6.0")
+    annotationProcessor("androidx.room:room-compiler:2.6.0")
+
     implementation("com.google.android.gms:play-services-wearable:18.1.0")
     //implementation(project(mapOf("path" to ":wearosaccelerometerdata")))
-    annotationProcessor("androidx.room:room-compiler:2.6.0")
 
     // To use Kotlin annotation processing tool (kapt)
     //kapt("androidx.room:room-compiler:2.6.0")
     // To use Kotlin Symbol Processing (KSP)
-    //ksp("androidx.room:room-compiler:2.6.0")
+//    ksp("androidx.room:room-compiler:2.6.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

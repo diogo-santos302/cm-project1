@@ -47,12 +47,13 @@
                 <data android:scheme="wear" android:host="*" android:pathPrefix="/numberranchopt" />
             </intent-filter>
         </service>
-        <receiver android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
+        <receiver
             android:name=".app.BootReceiver"
             android:directBootAware="true"
-            android:exported="true">
+            android:exported="true"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
             <intent-filter>
-                <action android:name="android.intent.action.ACTION_BOOT_COMPLETED" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
         <receiver android:name=".app.location.GeofenceBroadcastReceiver" />

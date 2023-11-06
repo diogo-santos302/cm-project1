@@ -1,8 +1,8 @@
 package com.example.mydaylogger.app.data
 
 import android.util.Log
-import com.example.mydaylogger.app.firebase.User
 import com.example.mydaylogger.app.firebase.MyRealtimeDatabase
+import com.example.mydaylogger.app.firebase.User
 import com.example.mydaylogger.app.firebase.UserGender
 
 private const val TAG = "DatabaseManager"
@@ -96,5 +96,6 @@ class DatabaseManager(private val databaseInstance: MyRealtimeDatabase) {
 
     fun getUser(phoneNumber: String, callback: (User?) -> Unit) {
         databaseInstance.readUser(phoneNumber, callback)
+        Log.i(TAG, "getUser")
     }
 }

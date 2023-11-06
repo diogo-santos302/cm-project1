@@ -16,6 +16,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
+import com.example.mydaylogger.app.data.AppContainer
+import com.example.mydaylogger.app.data.AppDataContainer
 import com.example.mydaylogger.app.location.CurrentLocationService
 import com.example.mydaylogger.app.location.GeofencingService
 import com.example.mydaylogger.app.ui.theme.MyDayLoggerTheme
@@ -25,6 +27,7 @@ private const val TAG = "MainActivity"
 class MainActivity : ComponentActivity() {
     private lateinit var geofencingService: GeofencingService
     private lateinit var currentLocationService: CurrentLocationService
+    private val appContainer: AppContainer = AppDataContainer(this)
 
     private val notificationPermissionRequest = registerForActivityResult(
         ActivityResultContracts.RequestPermission(),
@@ -65,7 +68,7 @@ class MainActivity : ComponentActivity() {
         currentLocationService = CurrentLocationService(this)
         //val notificationManager = NotificationManager()
         //notificationManager.sendDataMessage(Firebase.messaging.token.result, Geofence(40.0, 80.0, 100f))
-        val intentFilter =  IntentFilter("android.intent.action.ACTION_BOOT_COMPLETED")
+        val intentFilter =  IntentFilter("android.intent.action.BOOT_COMPLETED")
         registerReceiver(BootReceiver(), intentFilter)
 
         val serviceIntent = Intent(this, SensorDataListenerService::class.java)
@@ -78,11 +81,10 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     //MainScreen()
-                    MainScreen(this)
+                    MainScreen(this, appContainer)
 
                 }
             }
-
         }
     }
 

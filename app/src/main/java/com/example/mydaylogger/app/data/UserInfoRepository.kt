@@ -7,6 +7,7 @@ interface UserInfoRepository {
      * Retrieve all the items from the the given data source.
      */
 //    fun getUserInfoStream(): Flow<List<UserInfo>>
+    fun getNextUserId(): Int
 
     /**
      * Retrieve an item from the given data source that matches with the [id].

@@ -47,12 +47,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.room.Room
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.example.mydaylogger.R
-import com.example.mydaylogger.app.data.AppDatabase
-import com.example.mydaylogger.app.data.UserInfo
+import com.example.mydaylogger.app.data.AppContainer
+import com.example.mydaylogger.app.data.DatabaseManager
+import com.example.mydaylogger.app.firebase.MyRealtimeDatabase
+import com.example.mydaylogger.app.firebase.UserGender
+import com.google.firebase.Firebase
+import com.google.firebase.messaging.messaging
 import kotlinx.coroutines.launch
 
 
@@ -62,7 +65,8 @@ private const val TAGDB = "DBLOUCA"
 @Composable
 fun EditProfileScreen(
     navController: NavController,
-    context: Context
+    context: Context,
+    appContainer: AppContainer
     //viewModel: EditProfileViewModel = viewModel(factory= AppViewModelProvider.Factory)
 ){
 
@@ -70,6 +74,7 @@ fun EditProfileScreen(
     var age by rememberSaveable { mutableStateOf("") }
     var height by rememberSaveable { mutableStateOf("") }
     var weight by rememberSaveable { mutableStateOf("") }
+    var phoneNumber by rememberSaveable { mutableStateOf("") }
     var emergencyContact by rememberSaveable { mutableStateOf("") }
 
     var isExpanded by rememberSaveable {
@@ -95,32 +100,45 @@ fun EditProfileScreen(
             Text(
                 text = "Save",
                 modifier = Modifier.clickable {
-                    val db by lazy { Room.databaseBuilder(
-                        context,
-                        AppDatabase::class.java, "user_database"
-                    ).build()
-                    }
                     coroutineScope.launch {
-                    //Check if requires fields are empty or null
-                        if (name.isEmpty() || age.isEmpty() || height.isEmpty() || weight.isEmpty() || gender.isEmpty() || emergencyContact.isEmpty()) {
+                        //Check if requires fields are empty or null
+                        Log.d(
+                            TAGE,
+                            "$name, $age, $height, $weight, $gender, $phoneNumber, $emergencyContact"
+                        )
+                        if (
+                            name.isEmpty() || age.isEmpty() || height.isEmpty()
+                            || weight.isEmpty() || gender.isEmpty() || phoneNumber.isEmpty()
+                            || emergencyContact.isEmpty()
+                            ) {
                             showEmptyFieldErrorNotification(context)
                             return@launch
                         }
-                        val id = db.userInfoDao().getNextId()
-
-                        db.userInfoDao().insert(
-                        UserInfo(
-                        id = id, // Replace with the actual user ID
-                        name = name,
-                        age = age.toInt(),
-                        height = height.toInt(),
-                        weight = weight.toDouble(),
-                        gender = gender,
-                        emergencyContact = emergencyContact.toInt()
-                    )
-                    )
-                    db.close()
-                    Log.d(TAGDB, db.userInfoDao().getUserInfo(0).toString())
+//                        val repository = appContainer.userInfoRepository
+//                        val id = repository.getNextUserId()
+//                        repository.insertUserInfo(
+//                            UserInfo(
+//                                id = id, // Replace with the actual user ID
+//                                name = name,
+//                                age = age.toInt(),
+//                                height = height.toInt(),
+//                                weight = weight.toDouble(),
+//                                gender = gender,
+//                                phoneNumber = phoneNumber,
+//                                emergencyContact = emergencyContact.toInt()
+//                            )
+//                        )
+                        val database = DatabaseManager(MyRealtimeDatabase)
+                        database.addNewUser(
+                            phoneNumber = phoneNumber,
+                            name = name,
+                            age = age.toInt(),
+                            height = height.toDouble(),
+                            weight = weight.toDouble(),
+                            gender = UserGender.valueOf(gender.uppercase()),
+                            firebaseToken = Firebase.messaging.token.result,
+                            caretakerPhoneNumber = emergencyContact
+                        )
                     }
 /*
                     coroutineScope.launch {
@@ -182,7 +200,7 @@ fun EditProfileScreen(
             .padding(start = 4.dp, end = 4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Height(cm):", modifier = Modifier.width(100.dp))
+            Text(text = "Height (cm):", modifier = Modifier.width(100.dp))
             TextField(
                 value = height,
                 onValueChange = { height = it },
@@ -198,7 +216,7 @@ fun EditProfileScreen(
             .padding(start = 4.dp, end = 4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Weight(kg):", modifier = Modifier.width(100.dp))
+            Text(text = "Weight (kg):", modifier = Modifier.width(100.dp))
             TextField(
                 value = weight,
                 onValueChange = { weight = it },
@@ -254,11 +272,24 @@ fun EditProfileScreen(
                             isExpanded = false
                         }
                     )
-
                 }
-
             }
+        }
 
+        Spacer(modifier = Modifier.size(10.dp))
+
+        Row (modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 4.dp, end = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = "Phone number:", modifier = Modifier.width(100.dp))
+            TextField(
+                value = phoneNumber,
+                onValueChange = { phoneNumber = it },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                singleLine = true,
+            )
         }
 
         Column(modifier = Modifier
