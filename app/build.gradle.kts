@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example"
+    namespace = "com.example.mydaylogger"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example"
+        applicationId = "com.example.mydaylogger"
         minSdk = 26
         targetSdk = 34
         versionCode = 1

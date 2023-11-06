@@ -7,12 +7,12 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
-import com.example.mydaylogger.ui.HEART_RATE_GRAPH_TEST_TAG
-import com.example.mydaylogger.ui.HEART_RATE_TEST_TAG
-import com.example.mydaylogger.ui.HeartRateCard
-import com.example.mydaylogger.ui.STEPS_PROGRESS_BAR_TEST_TAG
-import com.example.mydaylogger.ui.StepsCard
-import com.example.mydaylogger.ui.theme.MyDayLoggerTheme
+import com.example.mydaylogger.app.ui.HEART_RATE_GRAPH_TEST_TAG
+import com.example.mydaylogger.app.ui.HEART_RATE_TEST_TAG
+import com.example.mydaylogger.app.ui.HeartRateCard
+import com.example.mydaylogger.app.ui.STEPS_PROGRESS_BAR_TEST_TAG
+import com.example.mydaylogger.app.ui.StepsCard
+import com.example.mydaylogger.app.ui.theme.MyDayLoggerTheme
 import org.junit.Rule
 import org.junit.Test
 
