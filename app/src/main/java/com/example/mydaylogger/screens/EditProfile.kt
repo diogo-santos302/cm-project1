@@ -51,8 +51,8 @@ import androidx.room.Room
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.example.R
-import com.example.data.AppDatabase
-import com.example.data.UserInfo
+import com.example.mydaylogger.data.AppDatabase
+import com.example.mydaylogger.data.UserInfo
 import kotlinx.coroutines.launch
 
 

@@ -1,4 +1,4 @@
-package com.example.data
+package com.example.mydaylogger.data
 
 import kotlinx.coroutines.flow.Flow
 

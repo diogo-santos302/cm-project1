@@ -1,11 +1,11 @@
 package com.example.mydaylogger
 
 import android.app.Application
-import com.example.data.AppContainer
-import com.example.data.AppDataContainer
+import com.example.mydaylogger.data.AppContainer
+import com.example.mydaylogger.data.AppDataContainer
 
 class MyDayLoggerApplication : Application() {
-    lateinit var container: AppContainer
+    private lateinit var container: AppContainer
 
     override fun onCreate() {
         super.onCreate()
