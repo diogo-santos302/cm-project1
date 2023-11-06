@@ -24,4 +24,7 @@ interface UserInfoDao {
     @Query("SELECT * from user_table WHERE id=:id")
     fun getUserInfo(id: Int): Flow<UserInfo>
 
+    @Query ("SELECT MAX(id) + 1 FROM user_table")
+    fun getNextId(): Int
+
 }

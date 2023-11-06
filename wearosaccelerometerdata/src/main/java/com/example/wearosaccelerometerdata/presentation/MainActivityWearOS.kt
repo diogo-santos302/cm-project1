@@ -19,6 +19,7 @@ class MainActivityWearOS : ComponentActivity() {
 
     private lateinit var sensorHandler: SensorHandler
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

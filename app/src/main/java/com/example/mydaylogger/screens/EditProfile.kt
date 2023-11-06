@@ -1,5 +1,6 @@
 package com.example.mydaylogger.screens
 
+import android.app.AlertDialog
 import android.content.Context
 import android.net.Uri
 import android.util.Log
@@ -54,6 +55,7 @@ import com.example.data.AppDatabase
 import com.example.data.UserInfo
 import kotlinx.coroutines.launch
 
+
 private const val TAGDB = "DBLOUCA"
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -96,11 +98,19 @@ fun EditProfileScreen(
                     val db by lazy { Room.databaseBuilder(
                         context,
                         AppDatabase::class.java, "user_database"
-                    ).build()}
+                    ).build()
+                    }
                     coroutineScope.launch {
-                    db.userInfoDao().insert(
+                    //Check if requires fields are empty or null
+                        if (name.isEmpty() || age.isEmpty() || height.isEmpty() || weight.isEmpty() || gender.isEmpty() || emergencyContact.isEmpty()) {
+                            showEmptyFieldErrorNotification(context)
+                            return@launch
+                        }
+                        val id = db.userInfoDao().getNextId()
+
+                        db.userInfoDao().insert(
                         UserInfo(
-                        id = 0, // Replace with the actual user ID
+                        id = id, // Replace with the actual user ID
                         name = name,
                         age = age.toInt(),
                         height = height.toInt(),
@@ -109,6 +119,7 @@ fun EditProfileScreen(
                         emergencyContact = emergencyContact.toInt()
                     )
                     )
+                    db.close()
                     Log.d(TAGDB, db.userInfoDao().getUserInfo(0).toString())
                     }
 /*
@@ -277,7 +288,7 @@ fun EditProfileScreen(
             .padding(start = 4.dp, end = 4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Weight(kg):", modifier = Modifier.width(100.dp))
+            Text(text = "Phone number:", modifier = Modifier.width(100.dp))
             TextField(
                 value = emergencyContact,
                 onValueChange = { emergencyContact = it },
@@ -287,6 +298,16 @@ fun EditProfileScreen(
         }
     }
 }
+
+    fun showEmptyFieldErrorNotification(context: Context) {
+        val dialog = AlertDialog.Builder(context)
+            .setTitle("Empty Fields")
+            .setMessage("All fields must be filled in.")
+            .setPositiveButton("OK", null)
+            .create()
+
+        dialog.show()
+    }
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable

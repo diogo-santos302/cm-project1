@@ -13,6 +13,7 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun userInfoDao(): UserInfoDao
 
+
     //everything inside is going to be visible to other classes
     //if instance already exists return the same instance, otherwise in the synchronized bloch we
     // create a new instance, always using the same instance for room database
