@@ -98,4 +98,5 @@ class DatabaseManager(private val databaseInstance: MyRealtimeDatabase) {
         databaseInstance.readUser(phoneNumber, callback)
         Log.i(TAG, "getUser")
     }
+
 }

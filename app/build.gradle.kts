@@ -78,6 +78,7 @@ dependencies {
     //kapt("androidx.room:room-compiler:2.6.0")
     // To use Kotlin Symbol Processing (KSP)
 //    ksp("androidx.room:room-compiler:2.6.0")
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

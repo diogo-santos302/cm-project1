@@ -52,6 +52,7 @@ import coil.compose.rememberImagePainter
 import com.example.mydaylogger.R
 import com.example.mydaylogger.app.data.AppContainer
 import com.example.mydaylogger.app.data.DatabaseManager
+import com.example.mydaylogger.app.data.StorePhoneNumber
 import com.example.mydaylogger.app.firebase.MyRealtimeDatabase
 import com.example.mydaylogger.app.firebase.UserGender
 import com.google.firebase.Firebase
@@ -83,6 +84,8 @@ fun EditProfileScreen(
     var gender by rememberSaveable { mutableStateOf("") }
 
     val coroutineScope = rememberCoroutineScope()
+
+    val dataStore = StorePhoneNumber(context)
 
     Column (modifier = Modifier
         .verticalScroll(rememberScrollState())
@@ -139,6 +142,8 @@ fun EditProfileScreen(
                             firebaseToken = Firebase.messaging.token.result,
                             caretakerPhoneNumber = emergencyContact
                         )
+                        dataStore.savePhoneNumber(phoneNumber)
+
                     }
 /*
                     coroutineScope.launch {
