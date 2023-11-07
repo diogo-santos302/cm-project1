@@ -2,10 +2,13 @@ package com.example.mydaylogger.app.firebase
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.mydaylogger.R
+import com.example.mydaylogger.app.MainActivity
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
@@ -58,10 +61,13 @@ class MyFirebaseMessagingService: FirebaseMessagingService() {
 
         remoteMessage.notification?.let {
             Log.d(TAG, "Message Notification Body: ${it.body}")
+            val intent = Intent(this, MainActivity::class.java)
+            val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
             val notificationBuilder = NotificationCompat.Builder(this, channelId)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentTitle(it.title)
                 .setContentText(it.body)
+                .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
             notificationManager.notify(notificationId, notificationBuilder.build())
         }
