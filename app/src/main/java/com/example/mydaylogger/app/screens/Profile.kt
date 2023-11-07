@@ -18,6 +18,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,38 +41,29 @@ const val TAGE = "EDIT"
 fun ProfileScreen(
     navController: NavHostController
 ) {
-
     val context = LocalContext.current
     val dataStore = StorePhoneNumber(context)
     val savedPhoneNumber = dataStore.getPhoneNumber.collectAsState(initial = "edit")
-    Log.d(TAGE, "${savedPhoneNumber.value!!}")
+    Log.d(TAGE, savedPhoneNumber.value!!)
 
-    var name: String = ""
-    var age: String = ""
-    var height: String = ""
-    var weight: String = ""
-    var gender: String = ""
+    var name by remember { mutableStateOf("") }
+    var age by remember { mutableStateOf("") }
+    var height by remember { mutableStateOf("") }
+    var weight by remember { mutableStateOf("") }
+    var gender by remember { mutableStateOf("") }
+    var caretaker by remember { mutableStateOf("") }
 
     val database = DatabaseManager(MyRealtimeDatabase)
     database.getUser(savedPhoneNumber.value!!) {user ->
         if (user != null) {
-            var name = user.name
-            Log.d(TAGE, "$name")
-            var age = user.age.toString()
-            val height = user.height.toString()
-            val weight = user.weight.toString()
-            val gender = user.gender.toString()
-            //val caretakerPhoneNumber = user.caretakerPhoneNumber
-        } else{
-            val name = ""
-            val age = ""
-            val height = ""
-            val weight = ""
-            val gender = ""
+            name = user.name
+            age = user.age.toString()
+            height = user.height.toString()
+            weight = user.weight.toString()
+            gender = user.gender
+            caretaker = user.caretaker
         }
     }
-
-    Log.d(TAGE, "$name")
 
     Column(
         modifier = Modifier
@@ -107,7 +102,7 @@ fun ProfileScreen(
             verticalAlignment = Alignment.CenterVertically
         ){
             Text(text = "Name:", modifier = Modifier.width(120.dp), fontSize = 20.sp)
-            Text(text = "$name", fontSize = 20.sp)
+            Text(text = name, fontSize = 20.sp)
         }
 
         Spacer(modifier = Modifier.size(12.dp))
@@ -118,7 +113,7 @@ fun ProfileScreen(
             verticalAlignment = Alignment.CenterVertically
         ){
             Text(text = "Age:", modifier = Modifier.width(120.dp), fontSize = 20.sp)
-            Text(text = "age", fontSize = 20.sp)
+            Text(text = age, fontSize = 20.sp)
         }
 
         Spacer(modifier = Modifier.size(12.dp))
@@ -129,7 +124,7 @@ fun ProfileScreen(
             verticalAlignment = Alignment.CenterVertically
         ){
             Text(text = "Height(cm):", modifier = Modifier.width(120.dp), fontSize = 20.sp)
-            Text(text = "height", fontSize = 20.sp)
+            Text(text = height, fontSize = 20.sp)
         }
 
         Spacer(modifier = Modifier.size(12.dp))
@@ -140,7 +135,7 @@ fun ProfileScreen(
             verticalAlignment = Alignment.CenterVertically
         ){
             Text(text = "Weight(kg):", modifier = Modifier.width(120.dp), fontSize = 20.sp)
-            Text(text = "weight", fontSize = 20.sp)
+            Text(text = weight, fontSize = 20.sp)
         }
 
         Spacer(modifier = Modifier.size(12.dp))
@@ -151,7 +146,7 @@ fun ProfileScreen(
             verticalAlignment = Alignment.CenterVertically
         ){
             Text(text = "Gender:", modifier = Modifier.width(120.dp), fontSize = 20.sp)
-            Text(text = "gender", fontSize = 20.sp)
+            Text(text = gender, fontSize = 20.sp)
         }
 
         Spacer(modifier = Modifier.size(12.dp))
@@ -162,7 +157,7 @@ fun ProfileScreen(
             verticalAlignment = Alignment.CenterVertically
         ){
             Text(text = "Phone number:", modifier = Modifier.width(120.dp), fontSize = 20.sp)
-            Text(text = "${savedPhoneNumber.value!!}", fontSize = 20.sp)
+            Text(text = savedPhoneNumber.value!!, fontSize = 20.sp)
         }
 
         Spacer(modifier = Modifier.size(12.dp))
@@ -195,8 +190,7 @@ fun ProfileScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(text = "Phone number:", modifier = Modifier.width(120.dp), fontSize = 20.sp)
-            Text(text = "TODO()", fontSize = 20.sp)
-
+            Text(text = caretaker, fontSize = 20.sp)
         }
     }
 }

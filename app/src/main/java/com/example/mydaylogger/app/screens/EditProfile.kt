@@ -59,7 +59,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.messaging.messaging
 import kotlinx.coroutines.launch
 
-
+private const val TAG = "EditProfile"
 private const val TAGDB = "DBLOUCA"
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -109,11 +109,8 @@ fun EditProfileScreen(
                             TAGE,
                             "$name, $age, $height, $weight, $gender, $phoneNumber, $emergencyContact"
                         )
-                        if (
-                            name.isEmpty() || age.isEmpty() || height.isEmpty()
-                            || weight.isEmpty() || gender.isEmpty() || phoneNumber.isEmpty()
-                            || emergencyContact.isEmpty()
-                            ) {
+                        if (name.isEmpty() || age.isEmpty() || height.isEmpty()
+                            || weight.isEmpty() || gender.isEmpty() || phoneNumber.isEmpty()) {
                             showEmptyFieldErrorNotification(context)
                             return@launch
                         }
@@ -132,6 +129,7 @@ fun EditProfileScreen(
 //                            )
 //                        )
                         val database = DatabaseManager(MyRealtimeDatabase)
+                        Log.d(TAG, "$name, $age, $height, $weight, $gender, $emergencyContact")
                         database.addNewUser(
                             phoneNumber = phoneNumber,
                             name = name,
@@ -143,7 +141,7 @@ fun EditProfileScreen(
                             caretakerPhoneNumber = emergencyContact
                         )
                         dataStore.savePhoneNumber(phoneNumber)
-
+                        navController.popBackStack()
                     }
 /*
                     coroutineScope.launch {
