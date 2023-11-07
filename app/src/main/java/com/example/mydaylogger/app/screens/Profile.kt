@@ -33,7 +33,6 @@ import androidx.navigation.NavHostController
 import com.example.mydaylogger.app.BottomBarScreen
 import com.example.mydaylogger.app.data.DatabaseManager
 import com.example.mydaylogger.app.data.StorePhoneNumber
-import com.example.mydaylogger.app.firebase.MyRealtimeDatabase
 
 const val TAGE = "EDIT"
 
@@ -53,12 +52,12 @@ fun ProfileScreen(
     var gender by remember { mutableStateOf("") }
     var caretaker by remember { mutableStateOf("") }
 
-    val database = DatabaseManager(MyRealtimeDatabase)
+    val database = DatabaseManager()
     database.getUser(savedPhoneNumber.value!!) {user ->
         if (user != null) {
             name = user.name
             age = user.age.toString()
-            height = user.height.toString()
+            height = user.height.toInt().toString()
             weight = user.weight.toString()
             gender = user.gender
             caretaker = user.caretaker
@@ -123,7 +122,7 @@ fun ProfileScreen(
             .padding(start = 4.dp, end = 4.dp),
             verticalAlignment = Alignment.CenterVertically
         ){
-            Text(text = "Height(cm):", modifier = Modifier.width(120.dp), fontSize = 20.sp)
+            Text(text = "Height (cm):", modifier = Modifier.width(120.dp), fontSize = 20.sp)
             Text(text = height, fontSize = 20.sp)
         }
 
@@ -134,7 +133,7 @@ fun ProfileScreen(
             .padding(start = 4.dp, end = 4.dp),
             verticalAlignment = Alignment.CenterVertically
         ){
-            Text(text = "Weight(kg):", modifier = Modifier.width(120.dp), fontSize = 20.sp)
+            Text(text = "Weight (kg):", modifier = Modifier.width(120.dp), fontSize = 20.sp)
             Text(text = weight, fontSize = 20.sp)
         }
 

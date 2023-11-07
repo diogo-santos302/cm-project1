@@ -53,7 +53,6 @@ import com.example.mydaylogger.R
 import com.example.mydaylogger.app.data.AppContainer
 import com.example.mydaylogger.app.data.DatabaseManager
 import com.example.mydaylogger.app.data.StorePhoneNumber
-import com.example.mydaylogger.app.firebase.MyRealtimeDatabase
 import com.example.mydaylogger.app.firebase.UserGender
 import com.google.firebase.Firebase
 import com.google.firebase.messaging.messaging
@@ -128,7 +127,7 @@ fun EditProfileScreen(
 //                                emergencyContact = emergencyContact.toInt()
 //                            )
 //                        )
-                        val database = DatabaseManager(MyRealtimeDatabase)
+                        val database = DatabaseManager()
                         Log.d(TAG, "$name, $age, $height, $weight, $gender, $emergencyContact")
                         database.addNewUser(
                             phoneNumber = phoneNumber,

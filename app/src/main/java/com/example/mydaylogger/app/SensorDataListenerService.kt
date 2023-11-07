@@ -4,11 +4,15 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
+import com.example.mydaylogger.app.data.StorePhoneNumber
+import com.example.mydaylogger.app.notifications.Alarm
 import com.google.android.gms.wearable.DataClient
 import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.DataMapItem
 import com.google.android.gms.wearable.Wearable
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import java.io.FileNotFoundException
 import java.io.IOException
 import kotlin.math.abs
@@ -45,8 +49,6 @@ class SensorDataListenerService : Service(), DataClient.OnDataChangedListener {
             }
         }
     }
-
-
 
     override fun onDataChanged(dataEvents: DataEventBuffer) {
         Log.d(TAG1, "louco data change");
@@ -91,11 +93,21 @@ class SensorDataListenerService : Service(), DataClient.OnDataChangedListener {
             lastUpdateTime = currentTime
         }
 
-        if (count >= COUNT_THRESHOLD){
+        if (count >= COUNT_THRESHOLD) {
             //Trigger seizure warning
             Log.d(TAG1, "--------------------------->Seizure detected")
+            val alarm = Alarm(this)
+            runBlocking {
+                val userPhoneNumber = getPhoneNumber()
+                alarm.send(userPhoneNumber)
+            }
             count = 0
         }
+    }
+
+    private suspend fun getPhoneNumber(): String {
+        val dataStore = StorePhoneNumber(this)
+        return dataStore.getPhoneNumber.first() ?: ""
     }
 
     fun isSuddenChange(acelG: FloatArray): Boolean {

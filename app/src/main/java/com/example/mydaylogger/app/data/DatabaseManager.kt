@@ -7,7 +7,9 @@ import com.example.mydaylogger.app.firebase.UserGender
 
 private const val TAG = "DatabaseManager"
 
-class DatabaseManager(private val databaseInstance: MyRealtimeDatabase) {
+class DatabaseManager {
+    private val databaseInstance = MyRealtimeDatabase
+
     fun addNewUser(
         phoneNumber: String,
         name: String,
@@ -99,4 +101,13 @@ class DatabaseManager(private val databaseInstance: MyRealtimeDatabase) {
         Log.i(TAG, "getUser")
     }
 
+    fun getCaretakerAssociatedToUser(phoneNumber: String, callback: (User?) -> Unit) {
+        databaseInstance.readUser(phoneNumber) { user ->
+            if (user != null) {
+                val userCaretaker = user.caretaker
+                databaseInstance.readUser(userCaretaker, callback)
+            }
+        }
+        Log.i(TAG, "getCaretakerAssociatedToUser")
+    }
 }
